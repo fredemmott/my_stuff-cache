@@ -13,7 +13,7 @@ module MyStuff
       end
 
       def get keys
-        results = @mc.get(keys)
+        results = @mc.get(keys) unless keys.empty?
         keys.map{|k| results[k]}
       end
 
