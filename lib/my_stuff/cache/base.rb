@@ -17,13 +17,19 @@ module MyStuff
       # The following options are supported:
       # +update_cache+:: If fallback is called, cache the result (default
       #                  true)
+      # +force_update+:: Fetch from the database, even if there's a value
+      #                  in cache.
       def get_with_fallback ids, key_pattern, options = {}, &fallback
         options = {
           :update_cache => true,
         }.merge(options)
   
         to_cache = Hash.new
-        data = Hash[ids.zip(get(ids.map{|x| key_pattern % x}))]
+        if options[:force_update]
+          data = Hash[ids.zip([nil] * ids.size)]
+        else
+          data = Hash[ids.zip(get(ids.map{|x| key_pattern % x}))]
+        end
         data = data.map do |id, cache_result|
           if cache_result
             cache_result
