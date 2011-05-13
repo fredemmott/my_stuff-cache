@@ -12,11 +12,11 @@ module MyStuff
         @cache = Hash.new
       end
 
-      def get keys
+      def get keys, options = {}
         keys.map{|key| @cache[key]}
       end
 
-      def set values
+      def set values, options = {}
         @cache.merge! values
       end
     end

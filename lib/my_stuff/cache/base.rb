@@ -19,6 +19,8 @@ module MyStuff
       #                  true)
       # +force_update+:: Fetch from the database, even if there's a value
       #                  in cache.
+      # +ttl+: Keep fetched values in cache for the specified number of
+      #        seconds. Defaults to forever (0). May be completely ignored.
       def get_with_fallback ids, key_pattern, options = {}, &fallback
         options = {
           :update_cache => true,
@@ -43,11 +45,11 @@ module MyStuff
         data
       end
   
-      def get keys
+      def get keys, options = {}
         raise NotImplementedError.new
       end
   
-      def set values
+      def set values, options = {}
         raise NotImplementedError.new
       end
     end

@@ -12,7 +12,7 @@ module MyStuff
         @mc = memcached
       end
 
-      def get keys
+      def get keys, options = {}
         begin
           results = @mc.get(keys) unless keys.empty?
           keys.map{|k| results[k]}
@@ -22,10 +22,11 @@ module MyStuff
         end
       end
 
-      def set values
+      def set values, options = {}
+        options[:ttl] ||= 0
         begin
           values.each do |k,v|
-            @mc.set(k, v, 0)
+            @mc.set(k, v, options[:ttl])
           end
         rescue Memcached::Error => e
           LOG :warning, e
