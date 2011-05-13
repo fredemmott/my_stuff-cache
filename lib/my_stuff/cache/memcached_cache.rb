@@ -13,13 +13,22 @@ module MyStuff
       end
 
       def get keys
-        results = @mc.get(keys) unless keys.empty?
-        keys.map{|k| results[k]}
+        begin
+          results = @mc.get(keys) unless keys.empty?
+          keys.map{|k| results[k]}
+        rescue Memcached::Error => e
+          LOG :warning, e
+          [nil] * keys.size
+        end
       end
 
       def set values
-        values.each do |k,v|
-          @mc.set(k, v, 0)
+        begin
+          values.each do |k,v|
+            @mc.set(k, v, 0)
+          end
+        rescue Memcached::Error => e
+          LOG :warning, e
         end
       end
     end
