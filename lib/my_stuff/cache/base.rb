@@ -9,7 +9,7 @@ module MyStuff
     # - MyStuff::Cache::MemoryCache
     # - MyStuff::Cache::MemcachedCache
     class Base
-      # Try ant get ids from cache, falling back to to the given block.
+      # Try to get ids from cache, falling back to to the given block.
       #
       # - +ids+ is an array of ids
       # - +key_pattern+ is a printf string to turn an id into a cache key
@@ -44,11 +44,26 @@ module MyStuff
         set(to_cache) unless to_cache.empty? || !options[:update_cache]
         data
       end
-  
+ 
+      # Fetch values from cache.
+      #
+      # Returns an array of values. If a key is not in the cache, nil is
+      # returned instead.
+      #
+      # +keys+ is an array of cache keys.
+      # 
+      # Currently, no options are supported.
       def get keys, options = {}
         raise NotImplementedError.new
       end
-  
+ 
+      # Set values in the cache.
+      #
+      # +values+ is a hash of cache key => values.
+      #
+      # The following options are supported:
+      # +ttl+: Keep fetched values in cache for the specified number of
+      #        seconds. Defaults to forever (0). May be completely ignored.
       def set values, options = {}
         raise NotImplementedError.new
       end
