@@ -8,6 +8,9 @@ module MyStuff
     #
     # If you want to use this, you know what it does.
     class MemcachedCache < MyStuff::Cache::Base
+      # Create an instance of this cache.
+      #
+      # +memcached+ is a Memcached object, provided by the memcached gem.
       def initialize memcached
         @mc = memcached
       end
