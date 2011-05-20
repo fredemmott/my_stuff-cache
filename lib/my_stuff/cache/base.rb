@@ -9,7 +9,21 @@ module MyStuff
     # - MyStuff::Cache::MemoryCache
     # - MyStuff::Cache::MemcachedCache
     class Base
-      # Try ant get ids from cache, falling back to to the given block.
+      # Try to get ids from cache, falling back to the given block.
+      #
+      # See #get_with_multi_fallback for documentation.
+      #
+      # Unlike get_with_multi_fallback, fallback gets called once for each
+      # id. You almost certainly want to use #get_with_multi_fallback
+      # instead.
+      def get_with_fallback ids, key_pattern, options = {}, &fallback
+        get_with_multi_fallback(ids, key_pattern, options) do |ids|
+          result = ids.map{|id| fallback.call(id) }
+          result
+        end
+      end
+
+      # Try to get ids from cache, falling back to to the given block.
       #
       # - +ids+ is an array of ids
       # - +key_pattern+ is a printf string to turn an id into a cache key
@@ -21,7 +35,9 @@ module MyStuff
       #                  in cache.
       # +ttl+: Keep fetched values in cache for the specified number of
       #        seconds. Defaults to forever (0). May be completely ignored.
-      def get_with_fallback ids, key_pattern, options = {}, &fallback
+      #
+      # The block gets passed the list of ids which missed the cache.
+      def get_with_multi_fallback ids, key_pattern, options = {}, &fallback
         options = {
           :update_cache => true,
         }.merge(options)
@@ -32,17 +48,14 @@ module MyStuff
         else
           data = Hash[ids.zip(get(ids.map{|x| key_pattern % x}))]
         end
-        data = data.map do |id, cache_result|
-          if cache_result
-            cache_result
-          else
-            result = fallback.call(id)
-            to_cache[key_pattern % id] = result
-            result
-          end
+        misses = data.select{|k,v| !v}.keys
+        from_fallback = fallback.call(misses)
+        Hash[misses.zip(from_fallback)].each do |k,v|
+          to_cache[key_pattern % k] = v
+          data[k] = v;
         end
         set(to_cache) unless to_cache.empty? || !options[:update_cache]
-        data
+        ids.map{|k| data[k]}
       end
   
       def get keys, options = {}
