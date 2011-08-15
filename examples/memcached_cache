@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# Copyright 2011-present Fred Emmott. See COPYING file.
+
+_DIR = File.dirname(__FILE__)
+$LOAD_PATH.push(File.join(_DIR, '../lib'))
+
+load File.join(_DIR, 'lib.rb')
+require 'memcached'
+require 'my_stuff/cache'
+
+mc = Memcached.new
+
+Foo.new(MyStuff::Cache::MemcachedCache.new(mc)).run
