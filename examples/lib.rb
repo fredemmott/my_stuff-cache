@@ -7,9 +7,10 @@ class Foo
   end
 
   def do_stuff ids
+    puts "Lookup for #{ids.inspect}"
     s = Time.new
     @cache.get_with_multi_fallback(ids, 'FOO:%d') do |ids|
-      puts "Uncached lookup for '#{ids.inspect}'"
+      puts "Cache miss for #{ids.inspect}"
       ids.map do |x|
         10000.times do 
           OpenSSL::Digest.hexdigest('sha512', x.inspect)
@@ -21,12 +22,12 @@ class Foo
 
   def run
     s = Time.new
-    do_stuff [1,2,3]
-    do_stuff [1,2,3]
-    do_stuff [1,2,3]
-    do_stuff [2,3,4]
-    do_stuff [2,3,4]
-    do_stuff [2,3,4]
+    do_stuff (1..5).to_a
+    do_stuff (1..5).to_a
+    do_stuff (1..5).to_a
+    do_stuff (5..9).to_a
+    do_stuff (5..9).to_a
+    do_stuff (5..9).to_a
     puts "Total: %dms" % ((Time.new - s) * 1000)
   end
 end
