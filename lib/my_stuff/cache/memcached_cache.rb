@@ -20,7 +20,7 @@ module MyStuff
           results = @mc.get(keys) unless keys.empty?
           keys.map{|k| results[k]}
         rescue Memcached::Error => e
-          LOG :warning, e
+          STDERR.write "WARNING: #{e.inspect}\n"
           [nil] * keys.size
         end
       end
@@ -32,7 +32,7 @@ module MyStuff
             @mc.set(k, v, options[:ttl])
           end
         rescue Memcached::Error => e
-          LOG :warning, e
+          STDERR.write "WARNING: #{e.inspect}\n"
         end
       end
     end
