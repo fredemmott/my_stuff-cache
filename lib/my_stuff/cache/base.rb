@@ -49,10 +49,12 @@ module MyStuff
           data = Hash[ids.zip(get(ids.map{|x| key_pattern % x}))]
         end
         misses = data.select{|k,v| !v}.keys
-        from_fallback = fallback.call(misses)
-        Hash[misses.zip(from_fallback)].each do |k,v|
-          to_cache[key_pattern % k] = v
-          data[k] = v;
+        unless misses.empty?
+          from_fallback = fallback.call(misses)
+          Hash[misses.zip(from_fallback)].each do |k,v|
+            to_cache[key_pattern % k] = v
+            data[k] = v;
+          end
         end
         set(to_cache) unless to_cache.empty? || !options[:update_cache]
         ids.map{|k| data[k]}
