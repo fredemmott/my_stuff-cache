@@ -1,0 +1,28 @@
+= Overview
+
+A simple caching library, optimised for:
+* ease of use
+* multigets
+* delete/set rather than expire semantics
+
+= Usage
+
+See examples/.
+
+= Getting it
+
+ git clone git://github.com/fredemmott/my_stuff-cache.git
+
+or
+
+ gem install my_stuff-cache
+
+= Backends
+
+* null (no caching)
+* memory (in the MyStuff::Cache object itself)
+* memcached
+
+= Copying
+
+See the COPYING file.

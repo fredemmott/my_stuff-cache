@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
 
   s.files         = FileList[
     'COPYING',
+    'README.rdoc',
     'lib/**/*.rb',
   ].to_a
 end
