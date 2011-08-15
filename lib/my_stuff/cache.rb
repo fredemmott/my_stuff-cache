@@ -1,8 +1,7 @@
-# Copyright 2011-present Fred Emmott. All Rights Reserved.
+# Copyright 2011-present Fred Emmott. See COPYING file.
 
 require 'my_stuff/cache/base'
 
-# Code for MyStuff.ws
 module MyStuff
   # Simplistic caching module.
   #
