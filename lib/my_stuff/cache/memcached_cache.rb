@@ -11,8 +11,9 @@ module MyStuff
       # Create an instance of this cache.
       #
       # +memcached+ is a Memcached object, provided by the memcached gem.
-      def initialize memcached
+      def initialize memcached, options = {}
         @mc = memcached
+        super options
       end
 
       def get keys, options = {}
@@ -20,7 +21,7 @@ module MyStuff
           results = @mc.get(keys) unless keys.empty?
           keys.map{|k| results[k]}
         rescue Memcached::Error => e
-          STDERR.write "WARNING: #{e.inspect}\n"
+          logger.warn e.inspect
           [nil] * keys.size
         end
       end
@@ -32,7 +33,7 @@ module MyStuff
             @mc.set(k, v, options[:ttl])
           end
         rescue Memcached::Error => e
-          STDERR.write "WARNING: #{e.inspect}\n"
+          logger.warn e
         end
       end
     end

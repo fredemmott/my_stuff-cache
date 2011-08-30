@@ -9,6 +9,11 @@ module MyStuff
     # - MyStuff::Cache::MemoryCache
     # - MyStuff::Cache::MemcachedCache
     class Base
+      attr_reader :logger
+      def initialize options = {}
+        @logger = options[:logger] || create_logger
+      end
+
       # Try to get ids from cache, falling back to the given block.
       #
       # See #get_with_multi_fallback for documentation.
@@ -81,6 +86,19 @@ module MyStuff
       #        seconds. Defaults to forever (0). May be completely ignored.
       def set values, options = {}
         raise NotImplementedError.new
+      end
+
+      private
+
+      def create_logger
+        # Use MyStuff::Logger if it's already loaded; fall back to standard
+        # Logger
+        if (MyStuff.const_get(:Logger) rescue nil)
+          MyStuff::Logger.new
+        else
+          require 'logger'
+          Logger.new(STDOUT)
+        end
       end
     end
   end

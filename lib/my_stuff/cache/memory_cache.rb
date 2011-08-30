@@ -8,8 +8,9 @@ module MyStuff
     # this means that it won't be shared between all requests in a
     # Passenger or pool-based setup.
     class MemoryCache < MyStuff::Cache::Base
-      def initialize
+      def initialize options = {}
         @cache = Hash.new
+        super options
       end
 
       def get keys, options = {}
