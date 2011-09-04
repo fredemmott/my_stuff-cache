@@ -9,9 +9,11 @@ module MyStuff
     # - MyStuff::Cache::MemoryCache
     # - MyStuff::Cache::MemcachedCache
     class Base
+      attr_reader :prefix
       attr_reader :logger
       def initialize options = {}
         @logger = options[:logger] || create_logger
+        @prefix = options[:prefix]
       end
 
       # Try to get ids from cache, falling back to the given block.

@@ -18,7 +18,12 @@ module MyStuff
 
       def get keys, options = {}
         begin
-          results = @mc.get(keys) unless keys.empty?
+          if prefix.nil? || prefix.empty?
+            mc_keys = keys
+          else
+            mc_keys = keys.map{|x| prefix + x}
+          end
+          results = @mc.get(mc_keys) unless keys.empty?
           keys.map{|k| results[k]}
         rescue Memcached::Error => e
           logger.warn e.inspect
@@ -30,7 +35,8 @@ module MyStuff
         options[:ttl] ||= 0
         begin
           values.each do |k,v|
-            @mc.set(k, v, options[:ttl])
+            prefix = self.prefix || ''
+            @mc.set(prefix + k, v, options[:ttl])
           end
         rescue Memcached::Error => e
           logger.warn e
